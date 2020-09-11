@@ -2,17 +2,16 @@ from unittest import TestCase
 from selenium import webdriver
 
 
-class TestClass(TestCase):
+class LandingPageTestClass(TestCase):
     @classmethod
     def setUpClass(cls):
+        """User vists the homepage"""
         cls.browser = webdriver.Firefox()
         cls.browser.get("http://localhost:8000")
-
-    def test_smoke(self):
-        assert True
     
     def test_title(self):
-        assert 'Django' in self.browser.title
+        """User notices a somewhat descriptive title"""
+        assert 'To-Do' in self.browser.title
 
     @classmethod
     def tearDownClass(cls):
