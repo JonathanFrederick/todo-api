@@ -22,9 +22,11 @@ class LandingPageTestClass(LiveServerTestCase):
 
     def test_description(self):
         """User reads a description of the site and sees a link for the project repo"""
-        body = self.selenium.find_element_by_tag_name("body").text
-        assert 'This is the landing page for a to-do list api' in body
-        assert 'https://github.com/JonathanFrederick/todo-api/' in body
+        body = self.selenium.find_element_by_tag_name("body")
+        print(dir(body))
+        assert 'This is the landing page for a to-do list api' in body.text
+        assert 'https://github.com/JonathanFrederick/todo-api/' in \
+            body.find_element_by_tag_name('a').get_property('href')
 
     @classmethod
     def tearDownClass(cls):
