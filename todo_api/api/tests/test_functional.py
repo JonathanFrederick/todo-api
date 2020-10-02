@@ -48,6 +48,16 @@ class UserCreationTestClass(LiveServerTestCase):
             register_body)
         assert register_resp.status_code == 201
 
+    def test_registration_url_errors_on_GET(self):
+        register_body = {
+            "username": self.username,
+            "email": self.email,
+            "password": self.password
+        }
+        register_resp = get(f"{self.live_server_url}/registration",
+            register_body)
+        assert register_resp.status_code > 399
+
     # def test_correct_user_login(self):
     #     login_body={
     #         "email": email,
