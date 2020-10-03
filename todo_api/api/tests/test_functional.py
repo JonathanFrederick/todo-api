@@ -1,6 +1,7 @@
 from django.test import LiveServerTestCase
 from selenium.webdriver.firefox.webdriver import WebDriver
 from requests import get, post
+from django.contrib.auth.models import User
 
 
 class LandingPageTestClass(LiveServerTestCase):
@@ -12,9 +13,7 @@ class LandingPageTestClass(LiveServerTestCase):
         cls.selenium.implicitly_wait(10)
         # cls.selenium.get("http://localhost:8000")
         cls.selenium.get(cls.live_server_url)
-        
-        
-    
+
     def test_title(self):
         """User notices a somewhat descriptive title"""
         assert 'To-Do' in self.selenium.title
@@ -33,6 +32,7 @@ class LandingPageTestClass(LiveServerTestCase):
         cls.selenium.quit()
         super().tearDownClass()
 
+
 class UserCreationTestClass(LiveServerTestCase):
     username = "Simon_Tam"
     password = "mei-mei123"
@@ -45,8 +45,11 @@ class UserCreationTestClass(LiveServerTestCase):
             "password": self.password
         }
         register_resp = post(f"{self.live_server_url}/registration",
-            register_body)
-        assert register_resp.status_code == 201
+                             register_body)
+        user = User.objects.get(username=self.username)
+        self.assertTrue(register_resp.status_code == 201,
+                        msg="User was not created")
+        self.assertTrue(user, msg="User came back as None/False")
 
     def test_registration_url_errors_on_GET(self):
         register_body = {
@@ -55,7 +58,7 @@ class UserCreationTestClass(LiveServerTestCase):
             "password": self.password
         }
         register_resp = get(f"{self.live_server_url}/registration",
-            register_body)
+                            register_body)
         assert register_resp.status_code > 399
 
     # def test_correct_user_login(self):
