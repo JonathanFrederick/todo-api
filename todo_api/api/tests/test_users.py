@@ -9,21 +9,20 @@ class RegistrationEndPointTest(TestCase):
     username = "mal"
     email = "mreynolds@browncoats.mil"
     password = "7pinespass"
-    
+
     def test_registration_url_resolves_to_register_view(self):
         found = resolve('/registration')
         self.assertEqual(found.func, register)
 
     def test_correct_registration_url_request(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST = {
+        body = {
             "username": self.username,
             "email": self.email,
-            "password": self.password
+            "password": self.password,
         }
-        response = register(request)
+        response = self.client.post('/registration', data=body)
         self.assertEqual(response.status_code, 201)
+
         user = User.objects.get(username=self.username)
         self.assertTrue(user, msg="User came back as None/False")
 
