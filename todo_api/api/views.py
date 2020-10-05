@@ -19,3 +19,8 @@ def register(request):
         request.POST['password']
     )
     return HttpResponse("", status=201)
+
+
+@api_view(['GET'])
+def login(request):
+    return HttpResponse()

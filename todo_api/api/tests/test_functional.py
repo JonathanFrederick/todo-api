@@ -61,10 +61,18 @@ class UserCreationTestClass(LiveServerTestCase):
                             register_body)
         assert register_resp.status_code > 399
 
-    # def test_correct_user_login(self):
-    #     login_body={
-    #         "email": email,
-    #         "password": password
-    #     }
-    #     login_resp = get(f"{self.live_server_url}/login", login_body)
-    #     assert login_resp.status_code == 200
+    def test_correct_user_login(self):
+        login_body = {
+            "username": self.username,
+            "password": self.password
+        }
+        login_resp = get(f"{self.live_server_url}/login", login_body)
+        assert login_resp.status_code == 200
+
+    def test_login_url_errors_on_POST(self):
+        login_body = {
+            "username": self.username,
+            "password": self.password
+        }
+        login_resp = post(f"{self.live_server_url}/login", login_body)
+        assert login_resp.status_code > 399
