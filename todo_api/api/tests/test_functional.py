@@ -16,16 +16,16 @@ class LandingPageTestClass(LiveServerTestCase):
 
     def test_title(self):
         """User notices a somewhat descriptive title"""
-        assert 'To-Do' in self.selenium.title
+        self.assertIn('To-Do', self.selenium.title)
         # print(self.selenium.title)
 
     def test_description(self):
         """User reads a description of the site and sees a link for the project repo"""
         body = self.selenium.find_element_by_tag_name("body")
         print(dir(body))
-        assert 'This is the landing page for a to-do list api' in body.text
-        assert 'https://github.com/JonathanFrederick/todo-api/' in \
-            body.find_element_by_tag_name('a').get_property('href')
+        self.assertIn('This is the landing page for a to-do list api', body.text)
+        self.assertIn('https://github.com/JonathanFrederick/todo-api/',
+                      body.find_element_by_tag_name('a').get_property('href'))
 
     @classmethod
     def tearDownClass(cls):
@@ -59,7 +59,7 @@ class UserCreationTestClass(LiveServerTestCase):
         }
         register_resp = get(f"{self.live_server_url}/registration",
                             register_body)
-        assert register_resp.status_code > 399
+        self.assertGreater(register_resp.status_code, 399)
 
     def test_correct_user_login(self):
         login_body = {
@@ -67,7 +67,7 @@ class UserCreationTestClass(LiveServerTestCase):
             "password": self.password
         }
         login_resp = get(f"{self.live_server_url}/login", login_body)
-        assert login_resp.status_code == 200
+        self.assertEqual(login_resp.status_code, 200)
         # self.assertTrue(login_resp.json())
         self.assertTrue(login_resp.json()["token"])
 
@@ -77,4 +77,4 @@ class UserCreationTestClass(LiveServerTestCase):
             "password": self.password
         }
         login_resp = post(f"{self.live_server_url}/login", login_body)
-        assert login_resp.status_code > 399
+        self.assertGreater(login_resp.status_code, 399)
