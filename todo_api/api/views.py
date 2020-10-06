@@ -1,6 +1,6 @@
 from django.shortcuts import render
 # from django.template import loader
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 
 from rest_framework.decorators import api_view
@@ -23,4 +23,4 @@ def register(request):
 
 @api_view(['GET'])
 def login(request):
-    return HttpResponse()
+    return JsonResponse({"token": "HI"})

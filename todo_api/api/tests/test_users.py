@@ -51,7 +51,7 @@ class LoginEndPointTest(TestCase):
         }
         response = self.client.get('/login', data=body)
         self.assertEqual(response.status_code, 200)
-
+        self.assertIn('token', response.json())
         self.assertTrue(user, msg="User came back as None/False")
 
     def test_login_error_with_POST(self):

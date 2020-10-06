@@ -68,6 +68,8 @@ class UserCreationTestClass(LiveServerTestCase):
         }
         login_resp = get(f"{self.live_server_url}/login", login_body)
         assert login_resp.status_code == 200
+        # self.assertTrue(login_resp.json())
+        self.assertTrue(login_resp.json()["token"])
 
     def test_login_url_errors_on_POST(self):
         login_body = {
