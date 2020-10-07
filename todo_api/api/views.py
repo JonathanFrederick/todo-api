@@ -4,6 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 
 from rest_framework.decorators import api_view
+from rest_framework.authtoken.models import Token
 
 
 # Create your views here.
@@ -19,8 +20,3 @@ def register(request):
         request.POST['password']
     )
     return HttpResponse("", status=201)
-
-
-@api_view(['GET'])
-def login(request):
-    return JsonResponse({"token": "HI"})

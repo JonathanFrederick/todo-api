@@ -3,6 +3,8 @@ from selenium.webdriver.firefox.webdriver import WebDriver
 from requests import get, post
 from django.contrib.auth.models import User
 
+from rest_framework.authtoken.models import Token
+
 
 class LandingPageTestClass(LiveServerTestCase):
     @classmethod
@@ -62,19 +64,13 @@ class UserCreationTestClass(LiveServerTestCase):
         self.assertGreater(register_resp.status_code, 399)
 
     def test_correct_user_login(self):
-        login_body = {
-            "username": self.username,
-            "password": self.password
-        }
-        login_resp = get(f"{self.live_server_url}/login", login_body)
-        self.assertEqual(login_resp.status_code, 200)
-        # self.assertTrue(login_resp.json())
-        self.assertTrue(login_resp.json()["token"])
-
-    def test_login_url_errors_on_POST(self):
+        user = User.objects.create_user(username=self.username, email=self.email, password=self.password)
         login_body = {
             "username": self.username,
             "password": self.password
         }
         login_resp = post(f"{self.live_server_url}/login", login_body)
-        self.assertGreater(login_resp.status_code, 399)
+        self.assertEqual(login_resp.status_code, 200)
+        self.assertTrue(login_resp.json()["token"])
+        self.assertTrue(Token.objects.get(user=user.pk), "Requested Token object was not created")
+

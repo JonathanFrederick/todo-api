@@ -2,7 +2,11 @@ from django.test import TestCase
 from django.urls import resolve
 from django.http import HttpRequest
 from django.contrib.auth.models import User
-from api.views import register, login
+
+from api.views import register
+
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import obtain_auth_token
 
 
 class RegistrationEndPointTest(TestCase):
@@ -40,7 +44,7 @@ class LoginEndPointTest(TestCase):
 
     def test_login_url_resolves_to_login_view(self):
         found = resolve('/login')
-        self.assertEqual(found.func, login)
+        self.assertEqual(found.func, obtain_auth_token)
 
     def test_correct_login_url_request(self):
         user = User.objects.create_user(username=self.username, email=self.email, password=self.password)
@@ -49,13 +53,7 @@ class LoginEndPointTest(TestCase):
             "username": self.username,
             "password": self.password,
         }
-        response = self.client.get('/login', data=body)
+        response = self.client.post('/login', data=body)
         self.assertEqual(response.status_code, 200)
         self.assertIn('token', response.json())
-        self.assertTrue(user, msg="User came back as None/False")
-
-    def test_login_error_with_POST(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        response = login(request)
-        self.assertTrue(response.status_code > 399)
+        self.assertEqual(response.json()['token'], Token.objects.get(user=user.pk).key)
